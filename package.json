@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha Server/**/*.test.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,12 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "mongodb": "^3.0.7",
-    "mongoose": "^5.0.16"
+    "mongoose": "^5.0.16",
+    "request": "^2.85.0"
+  },
+  "devDependencies": {
+    "expect": "^22.4.3",
+    "mocha": "^5.1.1",
+    "supertest": "^3.0.0"
   }
 }
