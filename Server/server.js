@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 var express = require('express');
 var bodyParser = require('body-parser');
 
@@ -70,6 +72,19 @@ app.delete('/todos/:id', (req, res) => {
         res.status(400).send();
     });
 });
+
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    
+
+
+})
 
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
