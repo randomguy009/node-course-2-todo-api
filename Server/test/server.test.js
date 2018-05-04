@@ -12,7 +12,9 @@ const todos = [{
     text: 'First'
 }, {
     _id: new ObjectID(),
-    text: 'Second'
+    text: 'Second',
+    completed: true,
+    completedAt: 11313
 }];
 
 beforeEach((done) => {
@@ -142,6 +144,52 @@ describe('DELETE /todos/:id', () => {
         request(app)
             .delete(`/todos/fuckyou`)
             .expect(404)
+            .end(done);
+    });
+});
+
+describe('PATCH todos/:id', () => {
+    it('should update the todo', (done) => {
+        var id = todos[0]._id.toHexString();
+
+        var dummy = {
+            text: 'Come on now',
+            completed: true
+        }
+
+        request(app)
+            .patch(`/todos/${id}`)
+            .send(dummy)
+            .expect(200)
+            .expect((res) => {
+                // expect(res.body.todo.text).toBe('Come on now');
+                // expect(res.body.todo.completed).toBe(true);
+                 expect(res.body.todo.completedAt).toBeA('number');
+
+                expect(res.body.todo).toInclude(dummy);
+            })
+            .end(done);
+    });
+    
+    it('should clear some shit', (done) => {
+        var id = todos[1]._id.toHexString();
+
+        var dummy ={
+            text: 'shut the fuck up',
+            completed: false
+        };
+
+        request(app)
+            .patch(`/todos/${id}`)
+            .send(dummy)
+            .expect(200)
+            .expect((res) => {
+                // expect(res.body.todo.text).toBe('shut the fuck up');
+                // expect(res.body.todo.completed).toBe(false);
+                 expect(res.body.todo.completedAt).toNotExist();
+
+                expect(res.body.todo).toInclude(dummy);
+            })
             .end(done);
     });
 });
