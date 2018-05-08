@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node Server/server.js",
-    "test": "mocha Server/**/*.test.js"
+    "test": "SET \"NODE_ENV=test\" && mocha Server/**/*.test.js"
   },
   "author": "",
   "license": "ISC",
