@@ -4,24 +4,13 @@ const request = require('supertest');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 const {User} = require('./../models/user');
+const {todos, populateTodos} = require('./seed/seed');
+const {users, populateUsers} = require('./seed/seed');
 
 const {ObjectID} = require('mongodb');
 
-const todos = [{
-    _id: new ObjectID(),
-    text: 'First'
-}, {
-    _id: new ObjectID(),
-    text: 'Second',
-    completed: true,
-    completedAt: 11313
-}];
-
-beforeEach((done) => {
-    Todo.remove({}).then(() => {
-    Todo.insertMany(todos);
-    }).then(() => done());
-});
+beforeEach(populateTodos);
+beforeEach(populateUsers);
 
 describe('POST / todos', () => {
     it('should create a new todo', (done) => {
@@ -191,5 +180,25 @@ describe('PATCH todos/:id', () => {
                 expect(res.body.todo).toInclude(dummy);
             })
             .end(done);
+    });
+});
+
+console.log(users[0].tokens[0].token);
+
+describe('GET /users/me', () => {
+    it('should return user if authenticated', (done) => {
+        request(app)
+            .get('/users/me')
+            .set('x-auth', users[0].tokens[0].token)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body._id).toBe(users[0]._id.toHexString());
+                expect(res.body.email).toBe(users[0].email);
+            })
+            .end(done);
+    });
+
+    it('should return 401 if not authenticated', (done) =>{
+
     });
 });
