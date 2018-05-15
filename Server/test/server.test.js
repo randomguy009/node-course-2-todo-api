@@ -183,7 +183,6 @@ describe('PATCH todos/:id', () => {
     });
 });
 
-console.log(users[0].tokens[0].token);
 
 describe('GET /users/me', () => {
     it('should return user if authenticated', (done) => {
@@ -199,6 +198,64 @@ describe('GET /users/me', () => {
     });
 
     it('should return 401 if not authenticated', (done) =>{
-
+        request(app)
+            .get('/users/me')
+            .expect(401)
+            .expect((res) => {
+                expect(res.body).toEqual({});
+            })
+            .end(done);
     });
 });
+
+describe('POST /users', () => {
+    it('should create a user', (done) => {
+        var email = 'something@gmail.com';
+        var password = 'password';
+
+        request(app)
+            .post('/users')
+            .send({email, password})
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toExist();
+                expect(res.body._id).toExist();
+                expect(res.body.email).toExist();
+                done();
+            })
+            .end((err) => {
+                if(err) {
+                    return done(err);
+                }
+            });
+
+            User.findOne({email}).then((user) => {
+                expect(user).toExist();
+                expect(user.password).toNotBe(password);
+                done();
+            })
+    });
+
+    it('should return validation errors if request invalid', (done) => {
+        var email = 'somethinggmail.com';
+        var password = 'pa';
+
+        request(app)
+            .post('/users')
+            .send({email, password})
+            .expect(400)
+            .end(done);
+    });
+
+    it('should not create user if email in use', (done) => {
+        var email = 'something@gmail.com';
+        var password = 'pa';
+
+        request(app)
+            .post('/users')
+            .send({email, password})
+            .expect(400)
+            .end(done);
+
+    });
+})

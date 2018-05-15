@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node Server/server.js",
-    "test": "SET \"NODE_ENV=test\" && mocha Server/**/*.test.js --timeout 25000"
+    "test": "SET \"NODE_ENV=test\" && mocha Server/**/*.test.js --timeout 40000"
   },
   "author": "",
   "license": "ISC",
