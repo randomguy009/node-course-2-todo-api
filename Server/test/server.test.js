@@ -91,6 +91,7 @@ describe('GET/todos/id', () => {
     it('404 if todo not found', (done) => {
         request(app)
             .get(`/todos/${new ObjectID().toHexString()}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(404)
             .end(done);
     })
@@ -102,6 +103,7 @@ describe('DELETE /todos/:id', () => {
 
         request(app)
             .delete(`/todos/${todos[1]._id.toHexString()}`)
+            .set('x-auth', users[1].tokens[0].token)
             .expect(200)
             .expect((res) => {
                 expect(res.body.todo._id).toBe(id);
@@ -130,6 +132,7 @@ describe('DELETE /todos/:id', () => {
     it('should return 404 if todo not found', (done) => {
         request(app)
             .delete(`/todos/${new ObjectID().toHexString()}`)
+            .set('x-auth', users[1].tokens[0].token)
             .expect(404)
             .end(done);
     });
@@ -137,6 +140,7 @@ describe('DELETE /todos/:id', () => {
     it('should return 404 if object id is invalid', (done) => {
         request(app)
             .delete(`/todos/fuckyou`)
+            .set('x-auth', users[1].tokens[0].token)
             .expect(404)
             .end(done);
     });
@@ -154,6 +158,7 @@ describe('PATCH todos/:id', () => {
         request(app)
             .patch(`/todos/${id}`)
             .send(dummy)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect((res) => {
                 // expect(res.body.todo.text).toBe('Come on now');
@@ -176,6 +181,7 @@ describe('PATCH todos/:id', () => {
         request(app)
             .patch(`/todos/${id}`)
             .send(dummy)
+            .set('x-auth', users[1].tokens[0].token)
             .expect(200)
             .expect((res) => {
                 // expect(res.body.todo.text).toBe('shut the fuck up');
